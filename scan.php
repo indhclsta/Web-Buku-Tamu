@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,29 +41,12 @@
     <div class="scanner">
         <video id="preview" width="35%"></video>
             <?php
-            session_start();
-                if(isset($_SESSION['error'])){
-                    echo"
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Good job!',
-                      text: 'Your QR Got scanned!',
-                      showConfirmButton: false,
-                      timer: 1500
-                    });
-                    ";
-                }
-
                 if(isset($_SESSION['success'])){
-                    echo "
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Oops...',
-                      text: 'Something wrong!',
-                      showConfirmButton: false,
-                      timer: 1500
-                    });
-                    ";
+                    echo "<script>Swal.fire('Success', '".$_SESSION['success']."', 'success');</script>";
+                    unset($_SESSION['success']);
+                } else if(isset($_SESSION['error'])){
+                    echo "<script>Swal.fire('Error', '".$_SESSION['error']."', 'error');</script>";
+                    unset($_SESSION['error']);
                 }
                 ?>
     </div>
