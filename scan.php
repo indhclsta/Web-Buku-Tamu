@@ -40,21 +40,28 @@
     <div class="scanner">
         <video id="preview" width="35%"></video>
             <?php
+            session_start();
                 if(isset($_SESSION['error'])){
                     echo"
-                    <div class='alert alert-danger'>
-                    <h4>ERROR!</h4>
-                    ".$_SESSION['error']."
-                    </div>
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Good job!',
+                      text: 'Your QR Got scanned!',
+                      showConfirmButton: false,
+                      timer: 1500
+                    });
                     ";
                 }
 
                 if(isset($_SESSION['success'])){
-                    echo"
-                    <div class='alert alert-success' >
-                    <h4>SUCCESS!</h4>
-                    ".$_SESSION['success']."
-                    </div>
+                    echo "
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'Something wrong!',
+                      showConfirmButton: false,
+                      timer: 1500
+                    });
                     ";
                 }
                 ?>
