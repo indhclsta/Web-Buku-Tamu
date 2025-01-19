@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=press+start+2P&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <title>Selamat Datang</title>
@@ -22,7 +24,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1;
+            /* z-index: 1; */
         }
 
         .content {
@@ -36,7 +38,7 @@
 
 
         .pixel-button {
-            font-family: "Press Start 2P", cursive;
+            font-family: "Press Start 2P", serif;
             font-size: 30px;
             background-color: #ffcc00;
             color: #000;
@@ -48,6 +50,7 @@
             transition: transform 0.2s, box-shadow 0.2s;
             border-radius: 40px;
             text-decoration: none;
+            z-index: 1;
 
         }
 

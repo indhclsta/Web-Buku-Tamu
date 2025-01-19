@@ -19,10 +19,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1;
+            /* z-index: 1; */
         }
         .scanner{
-            z-index: 1;
+            z-index: 2;
         }
     </style>
     
@@ -31,11 +31,14 @@
     <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 </head>
 <body>
+  <!-- background video -->
     <video class="video-background" autoplay muted loop>
         <source src="./assets/scann.mp4" type="video/mp4">
     </video>
+
+    <!-- cam scanner. please turn on your webcam to use this -->
     <div class="scanner">
-        <video id="preview" width="45%"></video>
+        <video id="preview" width="35%"></video>
             <?php
                 if(isset($_SESSION['error'])){
                     echo"
@@ -57,6 +60,7 @@
                 ?>
     </div>
 
+     <!-- form to submit the scanned data -->
     <form action="insert1.php" method="post" class="form-horizontal" style="display: none;">
             <label>SCAN QR CODE</label>
             <input type="text" name="text" id="text" readonly="" placeholder="scan qrcode" class="form-control">
@@ -64,11 +68,13 @@
 
     
     <script type="text/javascript">
+      // create a scanner
       let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
       scanner.addListener('scan', function (content) {
         document.getElementById('text').value = content;
-        //
       });
+
+      // start the scanner
       Instascan.Camera.getCameras().then(function (cameras) {
         if (cameras.length > 0) {
           scanner.start(cameras[0]);
@@ -79,6 +85,7 @@
         console.error(e);
       });
 
+      // submit the form when a scan is done
       scanner.addListener('scan',function(c){
         document.getElementById('text').value=c;
         document.forms[0].submit();
