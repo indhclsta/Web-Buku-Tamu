@@ -69,8 +69,11 @@
         <source src="./assets/landing.mp4" type="video/mp4">
     </video>
 
-    <div class="content">
-        <a href="scan.php" class="pixel-button">Next</a>
+    <div class="content">    
+        <div class="button-container">
+            <a href="scan.php" class="pixel-button">scan</a>
+            <a href="formulir.php" class="pixel-button">Formulir</a>
+        </div>
     </div>
 </body>
 </html>
