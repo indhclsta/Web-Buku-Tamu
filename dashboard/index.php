@@ -92,7 +92,7 @@
             <div class="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg mb-8 transition-transform hover-scale">
                 <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
                     <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                    Successful Registrations
+                    VIP Guest
                 </h2>
                 <table class="w-full text-left text-white">
                 <thead>
@@ -102,6 +102,7 @@
                             <th class="px-4 py-2">Date</th>
                             <th class="px-4 py-2">Time</th>
                             <th class="px-4 py-2">Event</th>
+                            <th class="px-4 py-2">Class</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,7 +115,7 @@
 
 
 
-                        $sql ="SELECT id,nama,date,time,events FROM reports WHERE date(time)=CURDATE() LIMIT $offset, $records_per_page";
+                        $sql ="SELECT id,nama,date,time,fid_events,class FROM reports WHERE date(time)=CURDATE() LIMIT $offset, $records_per_page";
                         $query = $conn->query($sql);
 
                         $total_records_query = "SELECT COUNT(*) AS total FROM reports";
@@ -129,7 +130,8 @@
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['nama'];?></td>
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['date'];?></td>
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['time'];?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['events'];?></td>
+                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['fid_events'];?></td>
+                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['class'];?></td>
                         </tr>
                         
                         <?php
@@ -139,6 +141,19 @@
                 </table>
             </div>
 
+            <!-- pagnation -->
+            <div class="pagination">
+                <!-- Previous Button -->
+                <a href="?page=<?= $page - 1 ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
+
+                <!-- Page Number Links -->
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <a href="?page=<?= $i ?>" <?= $i === $page ? 'class="active"' : '' ?>><?= $i ?></a>
+                <?php endfor; ?>
+
+                <!-- Next Button -->
+                <a href="?page=<?= $page + 1 ?>" class="<?= $page >= $total_pages ? 'disabled' : '' ?>">Next</a>
+            </div>
 
             <!-- failed report -->
             <!-- <div class="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg transition-transform hover-scale">
@@ -173,22 +188,11 @@
             </div> -->
 
 
-            <!-- pagnation -->
-            <div class="pagination">
-                <!-- Previous Button -->
-                <a href="?page=<?= $page - 1 ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
-
-                <!-- Page Number Links -->
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <a href="?page=<?= $i ?>" <?= $i === $page ? 'class="active"' : '' ?>><?= $i ?></a>
-                <?php endfor; ?>
-
-                <!-- Next Button -->
-                <a href="?page=<?= $page + 1 ?>" class="<?= $page >= $total_pages ? 'disabled' : '' ?>">Next</a>
-            </div>
 
             <div class="flex justify-center mt-8 space-x-4">
-                <button class="glow-button">Generate Report</button>
+            <a href="pdf.php" class="glow-button">Generate Report</a>
+
+                
             </div>
         </div>
         <footer class="bg-gradient-to-r from-purple-800 to-indigo-800 w-full py-4 mt-8 w-[100vw]">

@@ -23,6 +23,7 @@
         }
         .scanner{
             z-index: 1;
+            
         }
     </style>
     
@@ -59,7 +60,7 @@
 
     <form action="insert1.php" method="post" class="form-horizontal" style="display: none;">
             <label>SCAN QR CODE</label>
-            <input type="text" name="text" id="text" readonly="" placeholder="scan qrcode" class="form-control">
+            <input type="text" name="data[]" id="text" readonly="" placeholder="scan qrcode" class="form-control">
     </form> 
 
     
@@ -67,7 +68,6 @@
       let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
       scanner.addListener('scan', function (content) {
         document.getElementById('text').value = content;
-        //
       });
       Instascan.Camera.getCameras().then(function (cameras) {
         if (cameras.length > 0) {
