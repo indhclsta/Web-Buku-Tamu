@@ -114,10 +114,22 @@
                         $offset = ($page - 1) * $records_per_page; // Calculate offset
 
 
-
-                        $sql ="SELECT id,nama,date,time,fid_events,class FROM reports WHERE date(time)=CURDATE() LIMIT $offset, $records_per_page";
+                        // Fetch data from reports table
+                        $sql ="SELECT 
+                        r.id, 
+                        t.nama AS tamu_nama, 
+                        r.date, 
+                        r.time, 
+                        e.name as events_name,
+                        t.level as guest_lvl
+                        FROM reports r 
+                        JOIN tamu t ON r.fid_tamu = t.id 
+                        JOIN events e ON r.events_fid = e.id
+                        -- // Limit records based on offset and records per page
+                        LIMIT $offset, $records_per_page";
                         $query = $conn->query($sql);
 
+                        // Calculate total records and total pages
                         $total_records_query = "SELECT COUNT(*) AS total FROM reports";
                         $total_records_result = $conn->query($total_records_query);
                         $total_records = $total_records_result->fetch_assoc()['total'];
@@ -127,11 +139,11 @@
 
                         <tr class="hover:bg-purple-700 transition-colors">
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['id'];?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['nama'];?></td>
+                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['tamu_nama'];?></td>
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['date'];?></td>
                             <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['time'];?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['fid_events'];?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['class'];?></td>
+                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['events_name'];?></td>
+                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['guest_lvl'];?></td>
                         </tr>
                         
                         <?php

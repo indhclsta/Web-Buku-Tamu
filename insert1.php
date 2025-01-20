@@ -6,22 +6,30 @@ if(isset($_POST['data'])){
 
     $item = $_POST['data'];
 
-    $sql = "INSERT INTO reports(nama, date, time, fid_events) VALUES(?, ?, ?, ?)";
-    $stmt = $conn -> prepare($sql);
+    // check if the token is exist
+    $sql = "SELECT token FROM tamu WHERE token = '$text'";
 
-    if($stmt){
-        if (count($item) === 4) {
-            $stmt->bind_param($item[0], $item[1], $item[2], $item[3]);
-            $stmt->execute();
+
+    if($conn->query($sql)->num_rows > 0){
+        // check if fid_tamu already exists in reports
+        $checkSql = "SELECT fid_tamu FROM reports WHERE fid_tamu = (SELECT id FROM tamu WHERE token = '$text')";
+        if($conn->query($checkSql)->num_rows == 0){
+            $sql = "INSERT INTO reports (fid_tamu, date, time, events_fid) VALUES (
+            (SELECT id FROM tamu WHERE token = '$text'), 
+            CURDATE(), 
+            CURTIME(), 
+            (SELECT fid_events FROM tamu WHERE token = '$text') 
+            )";
+            $conn->query($sql);
+            $_SESSION['success'] = 'data berhasil ditambahkan';
         } else {
-            echo "Data tidak valid: ";
-            print_r($item);
-            echo "<br>";
+            $_SESSION['error'] = 'kamu sudah scan';
         }
+    } else {
+       $_SESSION['error'] = $conn->error;
     }
-    
-header("location: index.php");
-    
+
+    // redirect to scan.php
+header("location: scan.php");
 }
-$conn->close();
-?>
+// $conn->close();

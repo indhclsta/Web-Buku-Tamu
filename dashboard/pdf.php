@@ -1,6 +1,6 @@
 <?php
 // Include FPDF library
-require('../fpdf/fpdf.php');
+require('../vendor/fpdf/fpdf.php');
 
 // Include database connection
 include "../service/connection.php";
@@ -11,8 +11,23 @@ $records_per_page = 4;
 $offset = ($page - 1) * $records_per_page;
 
 // Query to fetch data from the database
-$sql = "SELECT id, nama, date, time, fid_events, class FROM reports WHERE date(time) = CURDATE() LIMIT $offset, $records_per_page";
+// Query to fetch data with proper JOIN
+$sql = "
+    SELECT 
+        r.id, 
+        t.nama, 
+        r.date, 
+        r.time, 
+        e.name AS event_name, 
+        t.level AS class 
+    FROM reports r
+    JOIN tamu t ON r.fid_tamu = t.id
+    JOIN events e ON r.events_fid = e.id
+    WHERE DATE(r.time) = CURDATE()
+    LIMIT $offset, $records_per_page
+";
 $query = $conn->query($sql);
+
 
 // Create instance of FPDF class
 $pdf = new FPDF();
@@ -46,9 +61,10 @@ while ($row = $query->fetch_assoc()) {
     $pdf->Cell(30, 10, $row['nama'], 1, 0, 'C');
     $pdf->Cell(40, 10, $row['date'], 1, 0, 'C');
     $pdf->Cell(30, 10, $row['time'], 1, 0, 'C');
-    $pdf->Cell(40, 10, $row['fid_events'], 1, 0, 'C');
+    $pdf->Cell(40, 10, $row['event_name'], 1, 0, 'C');
     $pdf->Cell(30, 10, $row['class'], 1, 1, 'C');
 }
+
 
 // Output the PDF
 $pdf->Output();
