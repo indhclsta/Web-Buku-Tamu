@@ -69,6 +69,17 @@
         <source src="./assets/landing.mp4" type="video/mp4">
     </video>
 
+    <?php
+    session_start();
+                if(isset($_SESSION['success'])){
+                    echo "<script>Swal.fire('Success', '".$_SESSION['success']."', 'success');</script>";
+                    unset($_SESSION['success']);
+                } else if(isset($_SESSION['error'])){
+                    echo "<script>Swal.fire('Error', '".$_SESSION['error']."', 'error');</script>";
+                    unset($_SESSION['error']);
+                }
+                ?>
+
     <div class="content">    
         <div class="button-container">
             <a href="scan.php" class="pixel-button">scan</a>

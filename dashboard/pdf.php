@@ -5,15 +5,10 @@ require('../vendor/fpdf/fpdf.php');
 // Include database connection
 include "../service/connection.php";
 
-// Check if the page number and date are set (if needed for filtering)
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$records_per_page = 4;
-$offset = ($page - 1) * $records_per_page;
 
 // Query to fetch data from the database
 // Query to fetch data with proper JOIN
-$sql = "
-    SELECT 
+$sql = "SELECT 
         r.id, 
         t.nama, 
         r.date, 
@@ -24,7 +19,6 @@ $sql = "
     JOIN tamu t ON r.fid_tamu = t.id
     JOIN events e ON r.events_fid = e.id
     WHERE DATE(r.time) = CURDATE()
-    LIMIT $offset, $records_per_page
 ";
 $query = $conn->query($sql);
 

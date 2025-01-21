@@ -22,9 +22,27 @@
             object-fit: cover;
             /* z-index: 1; */
         }
-        .scanner{
-            z-index: 2;
+
+
+        .scanner {
+            display: flex;
+            width: 100%;
+            position: absolute;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            z-index: 1;
+            padding-bottom: 20px;
+            margin: 20px;
         }
+
+        #preview {
+            border: 5px solid #000;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
     </style>
     
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
@@ -54,7 +72,7 @@
      <!-- form to submit the scanned data -->
     <form action="insert1.php" method="post" class="form-horizontal" style="display: none;">
             <label>SCAN QR CODE</label>
-            <input type="text" name="data[]" id="text" readonly="" placeholder="scan qrcode" class="form-control">
+            <input type="text" name="data" id="text" readonly="" placeholder="scan qrcode" class="form-control">
     </form> 
 
     

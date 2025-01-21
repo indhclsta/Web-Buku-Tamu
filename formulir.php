@@ -36,30 +36,51 @@
         <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-blue-600 text-yellow-400 px-4 py-2 rounded">
             <h1 class="text-center">Formulir<br>Tamu<br>Undangan</h1>
         </div>
-        <form class="space-y-4 mt-12">
+        <form class="space-y-4 mt-12" action="service/auth.php" method="POST">
             <div>
                 <label for="nama" class="block text-black">NAMA LENGKAP</label>
-                <input type="text" id="nama" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nama lengkap">
+                <input type="text" name="nama" id="nama" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nama lengkap">
             </div>
             <div>
                 <label for="event" class="block text-black">EVENT</label>
-                <select id="event" class="w-full p-2 border border-gray-400 rounded">
-                    <option>Pilih event</option>
-                    <option>Pameran SMKN 71</option>
-                    <option>JobFair</option>
-                    <option>EduFair</option>
+                <select id="event" name="event" class="w-full p-2 border border-gray-400 rounded">
+                    <?php
+                    include "service/connection.php";
+
+                    $sql = "SELECT id,name FROM events";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo '<option value="' . $row["id"] . '">' . $row["name"] . '</option>';
+                        }
+                    } else {
+                        echo '<option value="">No events available</option>';
+                    }
+                    $conn->close();
+                    ?>
                 </select>
             </div>
             <div>
                 <label for="telepon" class="block text-black">NOMOR TELEPON</label>
-                <input type="text" id="telepon" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nomor telepon">
+                <input type="number" name="telepon" id="telepon" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nomor telepon">
             </div>
             <div>
                 <label for="token" class="block text-black">TOKEN</label>
-                <input type="text" id="token" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan token">
+                <input type="text" name="token" id="token" class="w-full p-2 border border-gray-400 rounded" placeholder="Kosongkan jika tidak ada token">
             </div>
-            <button type="submit" class="w-full bg-yellow-400 text-black py-2 rounded">KIRIM</button>
+            <button type="submit" name="type" value="form" class="w-full bg-yellow-400 text-black py-2 rounded">KIRIM</button>
         </form>
+        <?php
+        session_start();
+                if(isset($_SESSION['success'])){
+                    echo "<script>Swal.fire('Success', '".$_SESSION['success']."', 'success');</script>";
+                    unset($_SESSION['success']);
+                } else if(isset($_SESSION['error'])){
+                    echo "<script>Swal.fire('Error', '".$_SESSION['error']."', 'error');</script>";
+                    unset($_SESSION['error']);
+                }
+                ?>
     </div>
 </body>
 </html>
