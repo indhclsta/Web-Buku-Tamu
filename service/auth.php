@@ -11,8 +11,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             form();
             break;
 
-        case 'data':
-            scan();
+        case 'login':
+            login();
             break;
 
         default:
@@ -73,4 +73,55 @@ function scan(){
 
     // redirect to scan.php
 header("location: ../scan.php");
+}
+
+function login(){
+    include "connection.php";
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password =  $_POST['password']; //hash('sha256', $_POST['password']); // Hash the input password using SHA-256
+    $sql = "SELECT * FROM admin WHERE username='$username' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
+
+    if ($result->num_rows > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['role'] = $row['role'];
+        $_SESSION['success'] = 'Berhasil login';
+        exit();
+        header('location: ../dashboard/dashboard.php');
+    } else {
+        $_SESSION['error'] = 'Ada data yang salah';
+    }
+}
+
+function register(){
+    include "./connection.php";
+
+    $username = $_POST['username'];
+    $password = hash('sha256', $_POST['password']); // Hash the input password using SHA-256
+    $cpassword = hash('sha256', $_POST['cpassword']); // Hash the input confirm password using SHA-256
+    
+    if ($password == $cpassword) {
+        $sql = "SELECT * FROM user WHERE username='$username'";
+        $result = mysqli_query($conn, $sql);
+        if (!$result->num_rows > 0) {
+            $sql = "INSERT INTO user (username, password)
+                    VALUES ('$username', '$password')";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                echo "<script>alert('Selamat, registrasi berhasil!')</script>";
+                // mengkosongkan value setelah berhasil insert data
+                $username = "";
+                $_POST['password'] = "";
+                $_POST['cpassword'] = "";
+                exit();
+            } else {
+                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+            }
+        } else {
+            echo "<script>alert('Woops! Email Sudah Terdaftar.')</script>";
+        }
+    } else {
+        echo "<script>alert('Password Tidak Sesuai')</script>";
+    }
 }
