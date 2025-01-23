@@ -131,7 +131,9 @@
                     <?php
                     include "../service/connection.php";
 
-                    $records_per_page = 4;
+                    $id = $_GET['id'];
+
+                    $records_per_page = 5;
                     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                     $offset = ($page - 1) * $records_per_page;
 
@@ -143,16 +145,17 @@
                     $sort_order = isset($_GET['order']) && $_GET['order'] == 'asc' ? 'ASC' : 'DESC'; // Default to descending order
 
                     // Modify the query to include search and sorting
-                    $sql =  "
-                    SELECT r.id, t.nama, r.date, r.time, e.name AS events
+                    $sql =  "SELECT r.id, t.nama AS nama, r.date, r.time, e.name AS events
                     FROM reports r
                     JOIN tamu t ON r.fid_tamu = t.id
                     JOIN events e ON r.events_fid = e.id
-                    WHERE r.date = CURDATE()
+                    WHERE r.events_fid = $id
                     AND (t.nama LIKE '%$search%' OR e.name LIKE '%$search%')
                     ORDER BY $sort_column $sort_order
                     LIMIT $offset, $records_per_page
                     ";
+
+                    // echo $sql;
                     $query = $conn->query($sql);
 
                     // Count total records
@@ -164,7 +167,7 @@
                     $total_records_result = $conn->query($total_records_query);
                     $total_records = $total_records_result->fetch_assoc()['total'];
                     $total_pages = ceil($total_records / $records_per_page);
-
+                    // var_dump($query->fetch_assoc());
                     while ($row = $query->fetch_assoc()) {
                     ?>
                         <tr class="hover:bg-purple-700 transition-colors">
