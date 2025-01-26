@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -131,8 +132,17 @@
                     <?php
                     include "../service/connection.php";
 
-                    $id = $_GET['id'];
+                    // Get event ID from URL
+                    // Update session variables based on GET request
+                    if (!isset($_SESSION['id'])) {
+                        $_SESSION['id'] = intval($_GET['id']);
+                    } else if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
+                        $_SESSION['id'] = intval($_GET['id']);
+                    }
 
+                    $id = $_SESSION['id'];
+
+                    // Handle pagination
                     $records_per_page = 5;
                     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                     $offset = ($page - 1) * $records_per_page;
@@ -187,11 +197,11 @@
 
     <!-- Pagination -->
     <div class="pagination">
-        <a href="?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
+        <a href="?id=<?=$id?>?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
             <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" <?= $i === $page ? 'class="active"' : '' ?>><?= $i ?></a>
         <?php endfor; ?>
-        <a href="?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'disabled' : '' ?>">Next</a>
+        <a href="?id=<?=$id?>&?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'disabled' : '' ?>">Next</a>
     </div>
 
     <div class="flex justify-center mt-8 mb-10 space-x-4">

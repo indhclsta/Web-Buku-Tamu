@@ -1,3 +1,8 @@
+<?php session_start();
+if (isset($_SESSION['id'])) {
+    unset($_SESSION['id']);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -192,26 +197,27 @@ $sql = "SELECT * FROM events";
 $result = $conn->query($sql);
 
 if (!$result) {
-    die("invalid" . $connection->error);
+    die("invalid" . $conn->error);
 }
 
 while ($row = $result->fetch_assoc()) {
-    $id=$row['id'];
-    echo"
+
+    ?>
     <tr class='text-center'>
-        <td class='border-t-2 border-white'>". $row['id'] ."</td>
-        <td class='border-t-2 border-white'>" . $row['name'] ."</td>
-        <td class='border-t-2 border-white'>" .$row['instansi'] ."</td>
-        <td class='border-t-2 border-white'>".$row["date(start)"]."</td>
-        <td class='border-t-2 border-white'>".$row["date(over)"]."</td>
+        <td class='border-t-2 border-white'><?=$row['id']?></td>
+        <td class='border-t-2 border-white'><?=$row['name'] ?></td>
+        <td class='border-t-2 border-white'><?=$row['instansi'] ?></td>
+        <td class='border-t-2 border-white'><?=$row['date(start)']?></td>
+        <td class='border-t-2 border-white'><?=$row['date(over)']?></td>
         <td class='action-icons'>
-                        <a href='main.php?id=$id' title='View Details'>
+                        <a href='main.php?id=<?=$row['id']?>' title='View Details'>
+                            
                             <i class='fas fa-eye'></i>
                         </a>
                         <i class='fas fa-trash' title='Delete'></i>
                     </td>
-    </tr>
-        ";
+    </tr>";
+    <?php
     }
     ?>
             </tbody>
