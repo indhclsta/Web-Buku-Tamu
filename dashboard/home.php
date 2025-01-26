@@ -51,7 +51,6 @@
         table thead {
             background: linear-gradient(45deg, #4c1d95, #6b21a8);
             color: white;
-            cursor: pointer;
         }
         table th, table td {
             padding: 1.25rem;
@@ -182,7 +181,40 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+            <?php 
+include("../service/connection.php");
+
+
+   
+
+$sql = "SELECT * FROM events";
+$result = $conn->query($sql);
+
+if (!$result) {
+    die("invalid" . $connection->error);
+}
+
+while ($row = $result->fetch_assoc()) {
+    $id=$row['id'];
+    echo"
+    <tr class='text-center'>
+        <td class='border-t-2 border-white'>". $row['id'] ."</td>
+        <td class='border-t-2 border-white'>" . $row['name'] ."</td>
+        <td class='border-t-2 border-white'>" .$row['instansi'] ."</td>
+        <td class='border-t-2 border-white'>".$row["date(start)"]."</td>
+        <td class='border-t-2 border-white'>".$row["date(over)"]."</td>
+        <td class='action-icons'>
+                        <a href='main.php?id=$id' title='View Details'>
+                            <i class='fas fa-eye'></i>
+                        </a>
+                        <i class='fas fa-trash' title='Delete'></i>
+                    </td>
+    </tr>
+        ";
+    }
+    ?>
+            </tbody>
         </table>
 
         <div class="pagination"></div>
@@ -193,14 +225,20 @@
     </footer>
 
 <script>
-    const events = [
-        { id: 1, name: "Job Fair Event", instansi: "BUMN", start: "2025-01-20 09:00", end: "2025-01-20 17:00" },
-        { id: 2, name: "Exhibition", instansi: "ExArt", start: "2025-02-15 10:00", end: "2025-02-15 18:00" },
-        { id: 3, name: "Edu Fair", instansi: "Oxford University", start: "2025-03-01 08:00", end: "2025-03-01 16:00" },
-        { id: 4, name: "Tech Conference", instansi: "TechWorld", start: "2025-04-05 09:00", end: "2025-04-05 17:00" },
-        { id: 5, name: "Art Gala", instansi: "ArtSpace", start: "2025-05-10 10:00", end: "2025-05-10 22:00" },
-        { id: 6, name: "Science Expo", instansi: "SciOrg", start: "2025-06-15 09:00", end: "2025-06-15 16:00" },
-    ];
+    // const events = [
+    //     <?php 
+    //     include '../service/connection.php';
+
+    //     $sql = "SELECT id, name, instansi, date(start), date(end) FROM events";
+    //     $result = $conn->query($sql);
+
+    //     if ($result->num_rows > 0) {
+    //         while($row = $result->fetch_assoc()) {
+    //             echo '{ id: ' . $row["id"] . ', name: "' . $row["name"] . '", instansi: "' . $row["instansi"] . '", start: "' . $row["date(start)"] . '", end: "' . $row["date(end)"] . '" },';
+    //         }
+    //     }
+    //         ?>
+    // ];
 
     let currentSortColumn = '';
     let sortDirection = 'asc';
@@ -226,7 +264,7 @@
                     <td>${event.start}</td>
                     <td>${event.end}</td>
                     <td class="action-icons">
-                        <a href="main.php" title="View Details">
+                        <a href=`<?= "main.php?id=$row[id]"; ?> ` title="View Details">
                             <i class="fas fa-eye"></i>
                         </a>
                         <i class="fas fa-trash" title="Delete"></i>
