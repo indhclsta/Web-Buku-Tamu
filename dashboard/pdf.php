@@ -62,4 +62,3 @@ while ($row = $query->fetch_assoc()) {
 
 // Output the PDF
 $pdf->Output();
-?>

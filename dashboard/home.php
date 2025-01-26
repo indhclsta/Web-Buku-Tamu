@@ -3,370 +3,174 @@ if (isset($_SESSION['id'])) {
     unset($_SESSION['id']);
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html >
+<html lang="en" class="font-ubuntu" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-        nav {
-            background: linear-gradient(to right, #6b21a8, #4338ca);
-            width: 100%;
-            position: fixed;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        main {
-            width: 100%;
-            max-width: 6xl;
-            margin-top: 6rem;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-        footer {
-            background: linear-gradient(to right, #6b21a8, #4338ca);
-            width: 100%;
-            padding: 1rem 0;
-            margin-top: auto;
-            text-align: center;
-            color: white;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 0.75rem;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-        table thead {
-            background: linear-gradient(45deg, #4c1d95, #6b21a8);
-            color: white;
-        }
-        table th, table td {
-            padding: 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        table tbody tr:nth-child(even) {
-            background: rgba(75, 85, 99, 0.1);
-        }
-        table tbody tr:hover {
-            background: rgba(75, 85, 99, 0.2);
-            transform: scale(1.02);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-        .action-icons {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-        .action-icons a {
-            text-decoration: none;
-        }
-        .action-icons i {
-            cursor: pointer;
-            padding: 0.6rem;
-            border-radius: 50%;
-            font-size: 1.25rem;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .action-icons i:hover {
-            transform: scale(1.2);
-        }
-        .fas.fa-eye {
-            background: linear-gradient(45deg, #2563eb, #1e40af);
-            color: white;
-        }
-        .fas.fa-eye:hover {
-            background: linear-gradient(45deg, #1e3a8a, #1e40af);
-        }
-        .fas.fa-trash {
-            background: linear-gradient(45deg, #dc2626, #b91c1c);
-            color: white;
-        }
-        .fas.fa-trash:hover {
-            background: linear-gradient(45deg, #991b1b, #b91c1c);
-        }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 2.5rem;
-            margin-bottom: 2rem;
-            gap: 0.5rem;
-        }
-        .pagination button {
-            padding: 0.5rem 1rem;
-            background: linear-gradient(45deg, #4c1d95, #6b21a8);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .pagination button:hover {
-            background: linear-gradient(45deg, #6b21a8, #8b5cf6);
-            transform: scale(1.1);
-        }
-        .pagination button:disabled {
-            background: #ddd;
-            cursor: not-allowed;
-            color: #666;
-        }
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
 
-        #adminMenu {
-            display: none;
-        }
-        #adminMenu.active {
-            display: block;
-        }
-    </style>
+
 </head>
-<body>
-<nav>
-        <div class="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center relative">
-            <h1 class="text-2xl font-bold text-white mr-4">Guest Book Admin</h1>
-            <div class="relative w-full max-w-sm">
-                <input 
-                    id="searchInput" 
-                    type="text" 
-                    placeholder="Search events..." 
-                    class="w-full p-2 pl-10 border-100 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-            </div>
-            <div class="relative">
-                <i class="fas fa-ellipsis-v text-white text-2xl cursor-pointer" onclick="toggleMenu()"></i>
-                <ul id="adminMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
-                    <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body class="bg-slate-900 text-white h-[100vh]">
 
-    <main>
+<nav class="bg-white border-gray-200 dark:bg-gray-900">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+  </a>
+  <div class="flex md:order-2">
+    <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search" aria-expanded="false" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1">
+      <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+      </svg>
+      <span class="sr-only">Search</span>
+    </button>
+    <div class="relative hidden md:block">
+      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
+        <span class="sr-only">Search icon</span>
+      </div>
+      <input  value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>" type="text" id="searchInput" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search...">
+    </div>
+    <button data-collapse-toggle="navbar-search" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-search" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+  </div>
+    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-search">
+      <div class="relative mt-3 md:hidden">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
+        <input type="text" id="search-navbar" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search...">
+      </div>
+      <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+        <li>
+          <a href="#" class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Event's List</a>
+        </li>
+        <li>
+          <a href="./acc.php" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Admin Account's</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="p-6">
         <h1 class="text-4xl font-bold text-white text-center mb-8">Available Events</h1>
-        <div class="flex justify-end mt-6">
-        <a href="create_event.php" class="relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-bold text-sm border border-green-500 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 rounded-md group">
-    <i class="fas fa-plus text-white mr-2 bg-green-500 p-1 rounded group-hover:bg-green-400 transition-all duration-300"></i>
-    <span>Create Event</span>
-</a>
-        </div>
+        <a class="text-[2rem] hover:text-sky-600" role="button" href="./create_event.php">Add New Events +</a>
 
-        <table>
-            <thead>
-                <tr>
-                    <th onclick="sortTable('id')">ID</th>
-                    <th onclick="sortTable('name')">Nama Event</th>
-                    <th onclick="sortTable('instansi')">Instansi</th>
-                    <th onclick="sortTable('start')">Waktu Mulai</th>
-                    <th onclick="sortTable('end')">Waktu Berakhir</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+        <table class="mt-3 w-[100%]">
+        <thead>
+            <tr class="text-[1.3rem]">
+                <th onclick="sortTable('id')" class="p-3">Id</th>
+                <th onclick="sortTable('name')" class="p-3">Name</th>
+                <th onclick="sortTable('instansi')" class="p-3">Instansi</th>
+                <th onclick="sortTable('start')" class="p-3">Start</th>
+                <th onclick="sortTable('end')" class="p-3">Over</th>
+                <th class="p-3 w-[20%]">Action</th>
+            </tr>
+        </thead>
             <tbody>
             <?php 
 include("../service/connection.php");
 
+$records_per_page = 5;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $records_per_page;
 
-   
+// Handle search term
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 
-$sql = "SELECT * FROM events";
-$result = $conn->query($sql);
+// Handle sorting
+$sort_column = isset($_GET['sort']) ? $_GET['sort'] : 'id'; // Default to 'id'
+$sort_order = isset($_GET['order']) && $_GET['order'] == 'asc' ? 'ASC' : 'DESC'; // Default to descending order
 
-if (!$result) {
-    die("invalid" . $conn->error);
-}
+// Modify the query to include search and sorting
+$sql =  "SELECT *
+FROM events
+WHERE (name LIKE '%$search%' OR instansi LIKE '%$search%')
+ORDER BY $sort_column $sort_order
+LIMIT $offset, $records_per_page
+";
 
-while ($row = $result->fetch_assoc()) {
+// echo $sql;
+$query = $conn->query($sql);
+
+// Count total records
+$total_records_query = "SELECT COUNT(*) AS total
+    FROM events
+    WHERE name LIKE '%$search%';
+    ";
+$total_records_result = $conn->query($total_records_query);
+$total_records = $total_records_result->fetch_assoc()['total'];
+$total_pages = ceil($total_records / $records_per_page);
+// var_dump($query->fetch_assoc());
+while ($row = $query->fetch_assoc()) {
 
     ?>
     <tr class='text-center'>
         <td class='border-t-2 border-white'><?=$row['id']?></td>
-        <td class='border-t-2 border-white'><?=$row['name'] ?></td>
-        <td class='border-t-2 border-white'><?=$row['instansi'] ?></td>
+        <td class='border-t-2 border-white'><?=$row['name']?></td>
+        <td class='border-t-2 border-white'><?=$row['instansi']?></td>
         <td class='border-t-2 border-white'><?=$row['date(start)']?></td>
         <td class='border-t-2 border-white'><?=$row['date(over)']?></td>
-        <td class='action-icons'>
-                        <a href='main.php?id=<?=$row['id']?>' title='View Details'>
-                            
-                            <i class='fas fa-eye'></i>
-                        </a>
-                        <i class='fas fa-trash' title='Delete'></i>
-                    </td>
-    </tr>";
+        <td class='border-t-2 border-white'>
+            <a class='btn btn-outline btn-info m-3' href='main.php?id=<?=$row["id"]?>'>Seen Details</a>
+            <!-- You can open the modal using ID.showModal() method -->
+            <button class='btn btn-outline btn-error m-3' onclick='my_modal_3.showModal()'>Delete</button>
+            <dialog id='my_modal_3' class='modal 0'>
+            <div class='modal-box '>
+                <form method='dialog'>
+                <button class='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>✕</button>
+                </form>
+                <h3 class='text-lg font-bold'>Peringatan!</h3>
+                <p class='py-4'>Data yang dihapus tidak dapat dikembalikan lagi. Apa kamu yakin untuk menghapus data ini?</p>
+                <a class='btn btn-outline btn-error' href='delete.php?id=<?=$row["id"]?>'>ya</a>
+            </div>
+            </dialog>
+            </td>
+    </tr>
     <?php
     }
     ?>
             </tbody>
         </table>
 
-        <div class="pagination"></div>
-    </main>
+        <div class="flex justify-center mt-5 gap-9">
+        <a href="?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'hidden' : 'btn btn-outline btn-primary' ?>">Previous</a>
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" <?= $i === $page ? 'class="btn"' : '' ?>><?= $i ?></a>
+        <?php endfor; ?>
+        <a href="?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'hidden' : 'btn btn-outline btn-primary' ?>">Next</a>
+    </div>
+</main>
 
-    <footer>
-        <p>&copy; 2025 Guest Book Admin</p>
-    </footer>
-
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
-    // const events = [
-    //     <?php 
-    //     include '../service/connection.php';
-
-    //     $sql = "SELECT id, name, instansi, date(start), date(end) FROM events";
-    //     $result = $conn->query($sql);
-
-    //     if ($result->num_rows > 0) {
-    //         while($row = $result->fetch_assoc()) {
-    //             echo '{ id: ' . $row["id"] . ', name: "' . $row["name"] . '", instansi: "' . $row["instansi"] . '", start: "' . $row["date(start)"] . '", end: "' . $row["date(end)"] . '" },';
-    //         }
-    //     }
-    //         ?>
-    // ];
-
-    let currentSortColumn = '';
-    let sortDirection = 'asc';
-    let currentPage = 1;
-    const rowsPerPage = 3;
-    let filteredEvents = [...events];
-
-    function renderTable(page) {
-        const tableBody = document.querySelector("table tbody");
-        tableBody.innerHTML = "";
-
-        const startIndex = (page - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-
-        const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
-
-        paginatedEvents.forEach(event => {
-            const row = `
-                <tr>
-                    <td>${event.id}</td>
-                    <td>${event.name}</td>
-                    <td>${event.instansi}</td>
-                    <td>${event.start}</td>
-                    <td>${event.end}</td>
-                    <td class="action-icons">
-                        <a href=`<?= "main.php?id=$row[id]"; ?> ` title="View Details">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <i class="fas fa-trash" title="Delete"></i>
-                    </td>
-                </tr>
-            `;
-            tableBody.insertAdjacentHTML("beforeend", row);
-        });
-
-        renderPagination();
-    }
-
+    // Sorting function
     function sortTable(column) {
-        if (currentSortColumn === column) {
-            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            currentSortColumn = column;
-            sortDirection = 'asc';
+            const currentUrl = new URL(window.location.href);
+            const currentSort = currentUrl.searchParams.get('sort');
+            const currentOrder = currentUrl.searchParams.get('order') === 'asc' ? 'desc' : 'asc';
+
+            currentUrl.searchParams.set('sort', column);
+            currentUrl.searchParams.set('order', currentOrder);
+
+            window.location.href = currentUrl.toString();
         }
-
-        filteredEvents.sort((a, b) => {
-            if (a[column] < b[column]) return sortDirection === 'asc' ? -1 : 1;
-            if (a[column] > b[column]) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
-        });
-
-        renderTable(currentPage);
-    }
-
-    function renderPagination() {
-        const paginationDiv = document.querySelector(".pagination");
-        paginationDiv.innerHTML = "";
-
-        const totalPages = Math.ceil(filteredEvents.length / rowsPerPage);
-
-        const prevButton = document.createElement("button");
-        prevButton.textContent = "« Previous";
-        prevButton.disabled = currentPage === 1;
-        prevButton.addEventListener("click", () => {
-            currentPage--;
-            renderTable(currentPage);
-        });
-        paginationDiv.appendChild(prevButton);
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement("button");
-            pageButton.textContent = i;
-            if (i === currentPage) {
-                pageButton.style.background = "#6b21a8";
-            }
-            pageButton.addEventListener("click", () => {
-                currentPage = i;
-                renderTable(currentPage);
-            });
-            paginationDiv.appendChild(pageButton);
-        }
-
-        const nextButton = document.createElement("button");
-        nextButton.textContent = "Next »";
-        nextButton.disabled = currentPage === totalPages;
-        nextButton.addEventListener("click", () => {
-            currentPage++;
-            renderTable(currentPage);
-        });
-        paginationDiv.appendChild(nextButton);
-    }
-
-    function searchEvents(keyword) {
-        filteredEvents = events.filter(event => 
-            event.name.toLowerCase().includes(keyword.toLowerCase()) || 
-            event.instansi.toLowerCase().includes(keyword.toLowerCase())
-        );
-        currentPage = 1;
-        renderTable(currentPage);
-    }
-
-    document.getElementById("searchInput").addEventListener("input", (e) => {
-        searchEvents(e.target.value);
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        renderTable(currentPage);
-    });
-
-    function toggleMenu() {
-            const menu = document.getElementById("adminMenu");
-            menu.classList.toggle("active");
-        }
-
-        document.addEventListener("click", (event) => {
-            const menu = document.getElementById("adminMenu");
-            const isClickInside = event.target.closest(".fa-ellipsis-v");
-            if (!isClickInside && menu.classList.contains("active")) {
-                menu.classList.remove("active");
-            }
-        });
 </script>
 
 </body>

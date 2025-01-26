@@ -197,7 +197,7 @@
 
     <!-- Pagination -->
     <div class="pagination">
-        <a href="?id=<?=$id?>?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
+        <a href="?id=<?=$id?>&?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
             <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" <?= $i === $page ? 'class="active"' : '' ?>><?= $i ?></a>
         <?php endfor; ?>
