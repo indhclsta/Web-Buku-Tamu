@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "service/connection.php";
+include "../service/connection.php";
 
 if(isset($_POST['data'])){
 
@@ -9,8 +9,8 @@ if(isset($_POST['data'])){
     // check if the token is exist
     $sql = "SELECT token FROM tamu WHERE token = '$item'";
 
-
     if($conn->query($sql)->num_rows > 0){
+
         // check if fid_tamu already exists in reports
         $checkSql = "SELECT fid_tamu FROM reports WHERE fid_tamu = (SELECT id FROM tamu WHERE token = '$item')";
         if($conn->query($checkSql)->num_rows == 0){
@@ -26,10 +26,10 @@ if(isset($_POST['data'])){
             $_SESSION['error'] = 'kamu sudah scan';
         }
     } else {
-       $_SESSION['error'] = $conn->error;
+       $_SESSION['error'] = "Kamu tidak terdaftar";
     }
 
     // redirect to scan.php
-header("location: ./scan.php");
+header("location: ../scan.php");
 }
 // $conn->close();
