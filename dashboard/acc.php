@@ -1,3 +1,27 @@
+<?php
+session_start();
+  if (isset($_SESSION['success'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Success',
+            text: '" . $_SESSION['success'] . "',
+            icon: 'success',
+            showConfirmButton: false
+        });
+    </script>";
+  } else if (isset($_SESSION['error'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: '" . $_SESSION['error'] . "',
+            icon: 'error',
+            showConfirmButton: false
+        });
+    </script>";
+  }
+  ?>
+
+
 <!DOCTYPE html>
 <html lang="en" class="font-ubuntu" >
     <head>
@@ -7,6 +31,9 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+        
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
         <title>Document</title>
     </head>
     <body class="bg-slate-900 text-white h-[100vh]">
@@ -62,7 +89,7 @@
 </nav>
         <div class="mx-14 mt-20">
         <h1 class="text-[3rem] mb-7">List of Admin's</h1>
-        <a class="text-[2rem] hover:text-sky-600" role="button" href="./create.php">Add Account +</a>
+        <a class="text-[2rem] hover:text-sky-600" role="button" href="./post-acc.php">Add Account +</a>
    <table class="mt-3 w-[100%]">
         <thead>
             <tr class="text-[1.3rem]">

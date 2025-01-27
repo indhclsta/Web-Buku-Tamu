@@ -1,25 +1,13 @@
 <?php
     session_start();
-    if (isset($_SESSION['success'])) {
-        echo "<script>
-            Swal.fire({
-                title: 'Success',
-                text: '" . $_SESSION['success'] . "',
-                icon: 'success',
-                showConfirmButton: false
-            });
-        </script>";
-      } else if (isset($_SESSION['error'])) {
-        echo "<script>
-            Swal.fire({
-                title: 'Error',
-                text: '" . $_SESSION['error'] . "',
-                icon: 'error',
-                showConfirmButton: false
-            });
-        </script>";
-      }
-      ?>
+                if(isset($_SESSION['success'])){
+                    echo "<script>Swal.fire('Success', '".$_SESSION['success']."', 'success');</script>";
+                    unset($_SESSION['success']);
+                } else if(isset($_SESSION['error'])){
+                    echo "<script>Swal.fire('Error', '".$_SESSION['error']."', 'error');</script>";
+                    unset($_SESSION['error']);
+                }
+                ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -94,26 +82,33 @@
 
         <form action="../service/auth.php" method="post" id="eventForm" class="bg-white p-6 rounded-lg shadow-md">
             <div class="mb-4">
-                <label for="name" class="block text-gray-700 font-bold mb-2">Nama:</label>
-                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                <label for="name" class="block text-gray-700 font-bold mb-2">Username:</label>
+                <input type="text" name="username" id="name" class="w-full p-2 border border-gray-300 rounded-lg" required>
             </div>
             
             <div class="mb-4">
-                <label for="event" class="block text-gray-700 font-bold mb-2">instansi:</label>
-                <input type="text" name="instansi" id="event" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                <label for="event" class="block text-gray-700 font-bold mb-2">Email:</label>
+                <input type="email" name="email" id="event" class="w-full p-2 border border-gray-300 rounded-lg" required>
             </div>
 
             <div class="mb-4">
-                <label for="date" class="block text-gray-700 font-bold mb-2">Start:</label>
-                <input type="date" name="start" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                <label for="date" class="block text-gray-700 font-bold mb-2">No. Tlp:</label>
+                <input type="number" name="phone" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
             </div>
 
             <div class="mb-4">
-                <label for="time" class="block text-gray-700 font-bold mb-2">Over:</label>
-                <input type="date" name="over" id="time" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="e.g., 09:00 - 17:00" required>
+                <label for="date" class="block text-gray-700 font-bold mb-2">Password:</label>
+                <input type="password" name="password" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
             </div>
 
-            <button type="submit" name="type" value="event" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Tambahkan Event</button>
+            <div class="mb-4">
+                <label for="date" class="block text-gray-700 font-bold mb-2">confirm Password:</label>
+                <input type="password" name="cpassword" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
+            </div>
+
+
+
+            <button type="submit" name="type" value="account" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Buat akun</button>
         </form>
 
         

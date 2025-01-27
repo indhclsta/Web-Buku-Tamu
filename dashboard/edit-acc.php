@@ -25,45 +25,9 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
     $phone= $row['phone'];
     $password= $row['password'];
 } else{
-    $id= $_POST['id'];
-    $name= $_POST['name'];
-    $email= $_POST['email'];
-    $phone= $_POST['phone'];
-    $password=  $_POST['password'];
-
-
-    $id = $_GET['id'];
-
-    do{
-        if(empty($name) || empty($email) || empty($phone)|| empty($password)){
-            $_SESSION['error']='Isi dlu';
-            break;
-        }
-        
-        $sql_check = "SELECT (email,phone) FROM admin WHERE (email = '$email' OR phone = '$phone') AND id != $id";
-        $result_check = $conn->query($sql_check);
-
-        // Jika ada record lain dengan email atau phone yang sama, tampilkan error
-        if ($result_check->num_rows > 0) {
-            $_SESSION['error'] = "Kesamaan ditemukan: Email dan NO Telephone sudah digunakan.";
-            break;
-        }
-
-        $sql= "UPDATE admin ".
-                "SET name = '$name', email ='$email', phone = '$phone', password = '$password' ".
-                "WHERE id = $id";
-
-        $result = $conn->query($sql);
-        
-        if (!$result){
-            $_SESSION['error']= "Query salah" . $conn->error;
-            break;
-        }
-        $$_SESSION['success'] = "updated";
-        
-        header("location: ./acc.php");
-        exit;
-    } while(false);
+    header('location: ./acc.php');
+    $_SESSION['error'] = 'Data tidak ditemukan';
+    exit;
 }
 ?>
 
@@ -78,6 +42,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
     <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
 </head>
 <body class=" text-white ">
 <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -117,21 +83,34 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
 </nav>
     <div class="mx-14 mt-[3rem]">
         <h2 class="text-[3rem] mb-7 font-bold">Update Data</h2>
-        
-        <?php 
-        if (!empty($errorMassage)){
-            echo "
-            <div>
-            <div>
-            <div class=``>
-            <strong>$errorMassage</strong>
-            </div>
-                </div>
-            </div>
-            ";
-        }
-        ?>
-        <form action="" method="post">
+        <?php
+  if (isset($_SESSION['success'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Success',
+            text: '" . $_SESSION['success'] . "',
+            icon: 'success',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['success']);
+  } else if (isset($_SESSION['error'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: '" . $_SESSION['error'] . "',
+            icon: 'error',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['error']);
+  }
+  ?>
+
+
+        <form action="../service/auth.php" method="post">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
             <div class="my-3">
                 <label class="text-[1.2rem] " for="">Name</label>
@@ -154,36 +133,24 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
             <div class="my-3">
                 <label class="text-[1.2rem] " for="">Password</label>
                 <div>
-                    <input class="w-[100%] bg-zinc-700  p-3 rounded h-[3rem]" placeholder="Masukkan Alamat" required type="password" name="password" value="<?php echo $password; ?>">
+                    <input class="w-[100%] bg-zinc-700  p-3 rounded h-[3rem]"  type="password" name="password" placeholder="Isi jika ingin mengganti password">
                 </div>
             </div>
             <div class="my-3">
                 <label class="text-[1.2rem] " for="">Confirm Password</label>
                 <div>
-                    <input class="w-[100%] bg-zinc-700  p-3 rounded h-[3rem]" placeholder="Masukkan Alamat" required type="password" name="password" value="<?php echo $password; ?>">
+                    <input class="w-[100%] bg-zinc-700  p-3 rounded h-[3rem]"  type="password" name="cpassword" placeholder="Confirm Password">
                 </div>
             </div>
-
-            <?php 
-            if (!empty($successMsg)){
-                echo "<div>
-                <div>
-                    <div class=``>
-                        <strong>$errorMassage</strong>
-                    </div>
-                </div>
-            </div>";
-            }
-            ?>
             <div class="flex justify-end m-10">
                 <div class="mx-4">
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" name="type" value="edit" class="btn btn-success">Submit</button>
                 </div>
                 <div class="mx-4">
-                    <a role="button" class="btn btn-error" href="acc.php">Cancel</a>
+                    <a role="button" class="btn btn-error" href="./acc.php">Cancel</a>
                 </div>
                 <div class="mx-4">
-                    <input type="reset" class="btn btn-info" value="Reset" >
+                    <input type="reset" class="btn btn-info" value="Reset">
                 </div>
             </div>
         </form>

@@ -15,10 +15,191 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             login();
             break;
 
+        case 'event':
+            event();
+            break;
+        
+        case 'account':
+            account();
+            break;
+
+        case 'edit':
+            edit();
+            break;
+            
+
         default:
         header ("location: ../index.php");
         break;
     }
+}
+
+function edit() {
+    include "connection.php";
+    $id= $_POST['id'];
+    $name= $_POST['name'];
+    $email= $_POST['email'];
+    $phone= $_POST['phone'];
+    $password=  $_POST['password'];
+    $cpassword= $_POST['cpassword'];
+
+    if($password || $cpassword == ""){ // If the password is empty and the confirm password is empty
+        if(empty($name) || empty($email) || empty($phone)){
+            $_SESSION['error']='Isi dlu';
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+
+        $sql_check = "SELECT email FROM admin WHERE (email = '$email' OR phone = '$phone') AND id != $id";
+        $result_check = $conn->query($sql_check);
+
+        // Jika ada record lain dengan email atau phone yang sama, tampilkan error
+        if ($result_check->num_rows > 0) {
+            $_SESSION['error'] = "Kesamaan ditemukan: Email dan/atau NO Telephone sudah digunakan.";
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+
+        $sql= "UPDATE admin ".
+                "SET username = '$name', email ='$email', phone = '$phone'".
+                "WHERE id = $id";
+        $result = $conn->query($sql);
+        
+        if (!$result){
+            $_SESSION['error']= "Query salah" . $conn->error;
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+
+        $$_SESSION['success'] = "updated";
+        header("location: ../dashboard/acc.php");
+        exit;
+    } else if($password && $cpassword != ""){ // If the password is not empty and the confirm password is not empty
+
+        if(empty($name)){
+            $_SESSION['error']='nama harus diisi';
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        } else if(empty($email)){
+            $_SESSION['error']='email harus diisi';
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        } else if(empty($phone)){
+            $_SESSION['error']='phone harus diisi';
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        } else if($password != $cpassword){
+            $_SESSION['error']='password tidak sesuai';
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+
+        $sql_check = "SELECT * FROM admin WHERE (email = '$email' OR phone = '$phone') AND id != $id";
+        $result_check = $conn->query($sql_check);
+
+        // Jika ada record lain dengan email atau phone yang sama, tampilkan error
+        if ($result_check->num_rows > 0) {
+            $_SESSION['error'] = "Kesamaan ditemukan: Email dan NO Telephone sudah digunakan.";
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+
+        $sql= "UPDATE admin ".
+                "SET username = '$name', email ='$email', phone = '$phone', password = '$password'".
+                "WHERE id = $id";
+        $result = $conn->query($sql);
+
+        if (!$result){
+            $_SESSION['error']= "Query salah" . $conn->error;
+            header("location: ../dashboard/edit-acc.php?id=$id");
+            exit;
+        }
+        $$_SESSION['success'] = "updated";
+        header("location: ../dashboard/acc.php");
+        exit;
+    } else {
+        header("location: ../dashboard/edit-acc.php?id=$id");
+        $_SESSION['error'] = "Password tidak sesuai";
+        exit;
+    }
+}
+
+function account(){
+    include "connection.php";
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $password = hash('sha256', $_POST['password']); // Hash the input password using SHA-256
+    $cpassword = hash('sha256', $_POST['cpassword']);
+
+    if ($password == $cpassword) {
+        $sql = "SELECT * FROM admin WHERE email='$email'";
+        $result = mysqli_query($conn, $sql);
+        if (!$result->num_rows > 0) {
+            $sql = "INSERT INTO admin (username, email, password, phone)
+                    VALUES ('$username', '$email', '$password', '$phone')";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                $_SESSION['success'] = 'Selamat, registrasi berhasil!';
+                header("Location: ../dashboard/acc.php");
+                exit();
+            } else {
+                $_SESSION['error'] = 'Ada data yang salah';
+            }
+        } else {
+            $_SESSION['error'] = 'Email sudah terdaftar';
+        }
+    } else {
+        $_SESSION['error'] = 'Password Tidak Sesuai';
+    }
+
+    header ("location: ../dashboard/acc.php");
+}
+
+function event(){
+    include "connection.php";
+    $name = $_POST['name'];
+    $instansi = $_POST['instansi'];
+    $start = $_POST['start'];
+    $over = $_POST['over'];
+
+    $sql = "SELECT name FROM events WHERE name = '$name'";
+    $result = mysqli_query($conn, $sql);
+    if(!$result->num_rows > 0){
+        // Check if the event dates overlap with any existing events
+        $sql = "SELECT * FROM events WHERE ('$start' BETWEEN `date(start)` AND `date(over)`) OR ('$over' BETWEEN `date(start)` AND `date(over)`) OR (`date(start)` BETWEEN '$start' AND '$over') OR (`date(over)` BETWEEN '$start' AND '$over')";
+        $result = mysqli_query($conn, $sql);
+        
+        if(!$result->num_rows > 0){
+            $sql = "INSERT INTO events ( `name`, `instansi`, `date(start)`, `date(over)`) VALUES ('$name', '$instansi', '$start', '$over')";
+            $result = mysqli_query($conn, $sql);
+            if($result){
+                $_SESSION['success'] = 'data berhasil ditambahkan';
+            } else {
+                $_SESSION['error'] = 'Data salah';
+            }
+        } else {
+            $_SESSION['error'] = 'Tanggal event bertabrakan dengan event lain';
+        }
+    } else {
+        $_SESSION['error'] = 'Data sudah ada';
+    }
+
+    header ("location: ../dashboard/home.php");
+    };
+
+
+function delete(){
+    include "connection.php";
+    $id = $_GET['id'];
+    $sql = "DELETE FROM  WHERE id=$id";
+    $result = mysqli_query($conn, $sql);
+    if($result){
+        $_SESSION['success'] = 'data berhasil dihapus';
+    } else {
+        $_SESSION['error'] = 'Data salah';
+    }
+    header ("location: ../dashboard/home.php");
 }
 
 function form(){
@@ -41,7 +222,7 @@ function form(){
         }
         } else {
             $_SESSION['error'] = 'Data sudah ada';
-        }
+        } 
 
     header ("location: ../index.php");
     }
@@ -66,34 +247,34 @@ function login(){
     }
 }
 
-function register(){
-    include "./connection.php";
+// function register(){
+//     include "./connection.php";
 
-    $username = $_POST['username'];
-    $password = hash('sha256', $_POST['password']); // Hash the input password using SHA-256
-    $cpassword = hash('sha256', $_POST['cpassword']); // Hash the input confirm password using SHA-256
+//     $username = $_POST['username'];
+//     $password = hash('sha256', $_POST['password']); // Hash the input password using SHA-256
+//     $cpassword = hash('sha256', $_POST['cpassword']); // Hash the input confirm password using SHA-256
     
-    if ($password == $cpassword) {
-        $sql = "SELECT * FROM user WHERE username='$username'";
-        $result = mysqli_query($conn, $sql);
-        if (!$result->num_rows > 0) {
-            $sql = "INSERT INTO user (username, password)
-                    VALUES ('$username', '$password')";
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                echo "<script>alert('Selamat, registrasi berhasil!')</script>";
-                // mengkosongkan value setelah berhasil insert data
-                $username = "";
-                $_POST['password'] = "";
-                $_POST['cpassword'] = "";
-                exit();
-            } else {
-                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
-            }
-        } else {
-            echo "<script>alert('Woops! Email Sudah Terdaftar.')</script>";
-        }
-    } else {
-        echo "<script>alert('Password Tidak Sesuai')</script>";
-    }
-}
+//     if ($password == $cpassword) {
+//         $sql = "SELECT * FROM admin WHERE username='$username'";
+//         $result = mysqli_query($conn, $sql);
+//         if (!$result->num_rows > 0) {
+//             $sql = "INSERT INTO admin (username, password)
+//                     VALUES ('$username', '$password')";
+//             $result = mysqli_query($conn, $sql);
+//             if ($result) {
+//                 echo "<script>alert('Selamat, registrasi berhasil!')</script>";
+//                 // mengkosongkan value setelah berhasil insert data
+//                 $username = "";
+//                 $_POST['password'] = "";
+//                 $_POST['cpassword'] = "";
+//                 exit();
+//             } else {
+//                 echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+//             }
+//         } else {
+//             echo "<script>alert('Woops! Email Sudah Terdaftar.')</script>";
+//         }
+//     } else {
+//         echo "<script>alert('Password Tidak Sesuai')</script>";
+//     }
+// }

@@ -9,9 +9,11 @@ if (isset($_SESSION['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 
 
 </head>
@@ -78,8 +80,8 @@ if (isset($_SESSION['id'])) {
                 <th onclick="sortTable('id')" class="p-3">Id</th>
                 <th onclick="sortTable('name')" class="p-3">Name</th>
                 <th onclick="sortTable('instansi')" class="p-3">Instansi</th>
-                <th onclick="sortTable('start')" class="p-3">Start</th>
-                <th onclick="sortTable('end')" class="p-3">Over</th>
+                <th onclick="sortTable('date(start)')" class="p-3">date(start)</th>
+                <th onclick="sortTable('date(end)')" class="p-3">Over</th>
                 <th class="p-3 w-[20%]">Action</th>
             </tr>
         </thead>
