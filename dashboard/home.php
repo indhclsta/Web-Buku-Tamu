@@ -77,11 +77,11 @@ if (isset($_SESSION['id'])) {
         <table class="mt-3 w-[100%]">
         <thead>
             <tr class="text-[1.3rem]">
-                <th onclick="sortTable('id')" class="p-3">Id</th>
-                <th onclick="sortTable('name')" class="p-3">Name</th>
-                <th onclick="sortTable('instansi')" class="p-3">Instansi</th>
-                <th onclick="sortTable('date(start)')" class="p-3">date(start)</th>
-                <th onclick="sortTable('date(end)')" class="p-3">Over</th>
+                <th onclick="sortTable('id')" class="p-3 pointer">Id</th>
+                <th onclick="sortTable('name')" class="p-3 pointer">Name</th>
+                <th onclick="sortTable('instansi')" class="p-3 pointer">Instansi</th>
+                <th onclick="sortTable('date(start)')" class="p-3 pointer">date(start)</th>
+                <th onclick="sortTable('date(end)')" class="p-3 pointer">Over</th>
                 <th class="p-3 w-[20%]">Action</th>
             </tr>
         </thead>
