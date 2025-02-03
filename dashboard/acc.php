@@ -1,24 +1,5 @@
 <?php
 session_start();
-  if (isset($_SESSION['success'])) {
-    echo "<script>
-        Swal.fire({
-            title: 'Success',
-            text: '" . $_SESSION['success'] . "',
-            icon: 'success',
-            showConfirmButton: false
-        });
-    </script>";
-  } else if (isset($_SESSION['error'])) {
-    echo "<script>
-        Swal.fire({
-            title: 'Error',
-            text: '" . $_SESSION['error'] . "',
-            icon: 'error',
-            showConfirmButton: false
-        });
-    </script>";
-  }
   ?>
 
 
@@ -89,6 +70,32 @@ session_start();
 </nav>
         <div class="mx-14 mt-20">
         <h1 class="text-[3rem] mb-7">List of Admin's</h1>
+        <?php
+  if (isset($_SESSION['success'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Success',
+            text: '" . $_SESSION['success'] . "',
+            icon: 'success',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['success']);
+  } else if (isset($_SESSION['error'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: '" . $_SESSION['error'] . "',
+            icon: 'error',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['error']);
+  }
+  ?>
+
         <a class="text-[2rem] hover:text-sky-600" role="button" href="./post-acc.php">Add Account +</a>
    <table class="mt-3 w-[100%]">
         <thead>

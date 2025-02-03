@@ -2,7 +2,7 @@
 $server_name = 'localhost';
 $username = 'root';
 $password = '';
-$database = "tamu v.2";
+$database = "tamu";//sesuaikan nama database
 
 $conn = mysqli_connect($server_name, $username, $password, $database);
 
