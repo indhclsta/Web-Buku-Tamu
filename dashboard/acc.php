@@ -9,12 +9,11 @@ session_start();
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
-        
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
         <title>Document</title>
     </head>
     <body class="bg-slate-900 text-white h-[100vh]">
@@ -120,35 +119,35 @@ if (!$result) {
 }
 
 while ($row = $result->fetch_assoc()) {
-    echo"
+    ?>
     <tr class='text-center'>
-        <td class='border-t-2 border-white'>$row[id]</td>
-        <td class='border-t-2 border-white'>$row[username]</td>
-        <td class='border-t-2 border-white'>$row[email]</td>
-        <td class='border-t-2 border-white'>$row[phone]</td>
-        <td class='border-t-2 border-white'>$row[created_at]</td>
-        <td class='border-t-2 border-white'>$row[updated_at]</td>
+        <td class='border-t-2 border-white'><?=$row['id']?></td>
+        <td class='border-t-2 border-white'><?=$row['username']?></td>
+        <td class='border-t-2 border-white'><?=$row['email']?></td>
+        <td class='border-t-2 border-white'><?=$row['phone']?></td>
+        <td class='border-t-2 border-white'><?=$row['created_at']?></td>
+        <td class='border-t-2 border-white'><?=$row['updated_at']?></td>
         <td class='border-t-2 border-white'>
-            <a class='btn btn-outline btn-info m-3' href='edit-acc.php?id=$row[id]'>Edit</a>
+            <a class='btn btn-outline btn-info m-3' href='edit-acc.php?id=<?=$row["id"]?>'>Edit</a>
             <!-- You can open the modal using ID.showModal() method -->
-            <button class='btn btn-outline btn-error m-3' onclick='my_modal_3.showModal()'>Delete</button>
-            <dialog id='my_modal_3' class='modal 0'>
+            <button class='btn btn-outline btn-error m-3' onclick="document.getElementById('my_modal_3_<?=$row['id']?>').showModal()">Delete</button>
+            <dialog id='my_modal_3_<?=$row['id']?>' class='modal 0'>
             <div class='modal-box '>
                 <form method='dialog'>
                 <button class='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>✕</button>
                 </form>
                 <h3 class='text-lg font-bold'>Peringatan!</h3>
                 <p class='py-4'>Data yang dihapus tidak dapat dikembalikan lagi. Apa kamu yakin untuk menghapus data ini?</p>
-                <a class='btn btn-outline btn-error' href='delete.php?id=$row[id]'>ya</a>
+                <a class='btn btn-outline btn-error' href='delete.php?id=<?=$row["id"]?>&value=del_acc'>ya</a>
             </div>
             </dialog>
             </td>
     </tr>
-        ";
+    <?php
     }
     ?>
     </table>
-
     </div>
+
 </body>
 </html>

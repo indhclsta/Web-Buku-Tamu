@@ -1,7 +1,5 @@
-<?php session_start();
-if (isset($_SESSION['id'])) {
-    unset($_SESSION['id']);
-}
+<?php 
+session_start();
 ?>
 <!DOCTYPE html >
 <html lang="en" class="font-ubuntu" >
@@ -64,7 +62,6 @@ if (isset($_SESSION['id'])) {
         <li>
           <a href="./acc.php" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Admin Account's</a>
         </li>
-        
       </ul>
     </div>
   </div>
@@ -74,14 +71,41 @@ if (isset($_SESSION['id'])) {
         <h1 class="text-4xl font-bold text-white text-center mb-8">Available Events</h1>
         <a class="text-[2rem] hover:text-sky-600" role="button" href="./create_event.php">Add New Events +</a>
 
+        <?php
+  if (isset($_SESSION['success'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Success',
+            text: '" . $_SESSION['success'] . "',
+            icon: 'success',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['success']);
+  } else if (isset($_SESSION['error'])) {
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: '" . $_SESSION['error'] . "',
+            icon: 'error',
+            timer: 1000, // 2 seconds
+            showConfirmButton: false
+        });
+    </script>";
+    unset($_SESSION['error']);
+  }
+  ?>
+
+
         <table class="mt-3 w-[100%]">
         <thead>
             <tr class="text-[1.3rem]">
                 <th onclick="sortTable('id')" class="p-3 pointer">Id</th>
                 <th onclick="sortTable('name')" class="p-3 pointer">Name</th>
                 <th onclick="sortTable('instansi')" class="p-3 pointer">Instansi</th>
-                <th onclick="sortTable('date(start)')" class="p-3 pointer">date(start)</th>
-                <th onclick="sortTable('date(end)')" class="p-3 pointer">Over</th>
+                <th onclick="sortTable('waktu_mulai')" class="p-3 pointer">Start</th>
+                <th onclick="sortTable('waktu_berakhir')" class="p-3 pointer">Over</th>
                 <th class="p-3 w-[20%]">Action</th>
             </tr>
         </thead>
@@ -127,27 +151,23 @@ while ($row = $query->fetch_assoc()) {
     <td class='border-t-2 border-white'><?= $row['id'] ?></td>
     <td class='border-t-2 border-white'><?= $row['name'] ?></td>
     <td class='border-t-2 border-white'><?= $row['instansi'] ?></td>
-    <td class='border-t-2 border-white'><?= $row['date(start)'] ?></td>
-    <td class='border-t-2 border-white'><?= $row['date(over)'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['waktu_mulai'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['waktu_berakhir'] ?></td>
     <td class='border-t-2 border-white'>
-        <a class='btn btn-outline btn-info m-3' href='main.php?id=<?= $row["id"] ?>'>Seen Details</a>
-        <a href="deleteevents.php?id=<?= $row['id'] ?>" class="btn btn-outline btn-error m-3" onclick="return confirm('Apakah Anda yakin ingin menghapus event ini?');">Delete</a>
-    </td>
-</tr>
-
-
-            <dialog id='my_modal_3' class='modal 0'>
+        <a class='btn btn-outline btn-info m-3' href='main.php?id=<?= $row["id"] ?>'>See Details</a>
+        <button class='btn btn-outline btn-error m-3' onclick="document.getElementById('my_modal_3_<?=$row['id']?>').showModal()">Delete</button>
+            <dialog id='my_modal_3_<?=$row['id']?>' class='modal 0'>
             <div class='modal-box '>
                 <form method='dialog'>
                 <button class='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>✕</button>
                 </form>
                 <h3 class='text-lg font-bold'>Peringatan!</h3>
-                <p class='py-4'>Data yang dihapus tidak dapat dikembalikan lagi. Apa kamu yakin untuk menghapus data ini?</p>
-                <a class='btn btn-outline btn-error' href='delete.php?id=<?=$row["id"]?>'>ya</a>
+                <p class='py-4'>Data events yang di hapus akan <b> MEMENGARUHI DATA REPORTS</b>. Apa kamu yakin untuk menghapus data ini?</p>
+                <a class='btn btn-outline btn-error' href='delete.php?id=<?=$row["id"]?>&value=del_e'>ya</a>
             </div>
             </dialog>
-            </td>
-    </tr>
+    </td>
+</tr>
     <?php
     }
     ?>
