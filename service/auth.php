@@ -26,7 +26,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         case 'edit':
             edit();
             break;
-            
+        
+        case 'delete':
+            delete();
+            break;            
 
         default:
         header ("location: ../index.php");
@@ -186,7 +189,7 @@ function event(){
     }
 
     header ("location: ../dashboard/home.php");
-    };
+}
 
 
 function delete(){
@@ -208,15 +211,19 @@ function form(){
     $event = $_POST['event'];
     $telepon = $_POST['telepon'];
     $token = $_POST['token'];
+    if($token != ""){
+        $level = 'VIP';
+    }else{
+        $level = "REGULAR";
+    }
 
     $sql = "SELECT * FROM tamu WHERE nama = '$nama'";
     $result = mysqli_query($conn, $sql);
     if(!$result->num_rows > 0){
-        $sql = "INSERT INTO tamu (nama, fid_events, level, token, telepon) VALUES ('$nama', $event, 'REGULAR', '$token', $telepon)";
+        $sql = "INSERT INTO tamu (nama, fid_events, level, token, telepon) VALUES ('$nama', $event, $level, '$token', $telepon)";
         $result = mysqli_query($conn, $sql);
         if($result){
             $_SESSION['success'] = 'data berhasil ditambahkan';
-
         } else {
             $_SESSION['error'] = 'Data salah';
         }
