@@ -1,6 +1,7 @@
 <?php
 include "../service/connection.php";
 
+session_start();
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
 
     //GET METHOD: menunjukan data dari table client

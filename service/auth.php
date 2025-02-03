@@ -74,10 +74,10 @@ function edit() {
             exit;
         }
 
-        $$_SESSION['success'] = "updated";
+        $_SESSION['success'] = "updated";
         header("location: ../dashboard/acc.php");
         exit;
-    } else if($password && $cpassword != ""){ // If the password is not empty and the confirm password is not empty
+    } else if($password == $cpassword){ // If the password is not empty and the confirm password is not empty
 
         if(empty($name)){
             $_SESSION['error']='nama harus diisi';
@@ -117,7 +117,7 @@ function edit() {
             header("location: ../dashboard/edit-acc.php?id=$id");
             exit;
         }
-        $$_SESSION['success'] = "updated";
+        $_SESSION['success'] = "updated";
         header("location: ../dashboard/acc.php");
         exit;
     } else {

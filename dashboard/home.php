@@ -124,15 +124,18 @@ while ($row = $query->fetch_assoc()) {
 
     ?>
     <tr class='text-center'>
-        <td class='border-t-2 border-white'><?=$row['id']?></td>
-        <td class='border-t-2 border-white'><?=$row['name']?></td>
-        <td class='border-t-2 border-white'><?=$row['instansi']?></td>
-        <td class='border-t-2 border-white'><?=$row['date(start)']?></td>
-        <td class='border-t-2 border-white'><?=$row['date(over)']?></td>
-        <td class='border-t-2 border-white'>
-            <a class='btn btn-outline btn-info m-3' href='main.php?id=<?=$row["id"]?>'>Seen Details</a>
-            <!-- You can open the modal using ID.showModal() method -->
-            <button class='btn btn-outline btn-error m-3' onclick='my_modal_3.showModal()'>Delete</button>
+    <td class='border-t-2 border-white'><?= $row['id'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['name'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['instansi'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['date(start)'] ?></td>
+    <td class='border-t-2 border-white'><?= $row['date(over)'] ?></td>
+    <td class='border-t-2 border-white'>
+        <a class='btn btn-outline btn-info m-3' href='main.php?id=<?= $row["id"] ?>'>Seen Details</a>
+        <a href="deleteevents.php?id=<?= $row['id'] ?>" class="btn btn-outline btn-error m-3" onclick="return confirm('Apakah Anda yakin ingin menghapus event ini?');">Delete</a>
+    </td>
+</tr>
+
+
             <dialog id='my_modal_3' class='modal 0'>
             <div class='modal-box '>
                 <form method='dialog'>
@@ -151,13 +154,17 @@ while ($row = $query->fetch_assoc()) {
             </tbody>
         </table>
 
-        <div class="flex justify-center mt-5 gap-9">
-        <a href="?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'hidden' : 'btn btn-outline btn-primary' ?>">Previous</a>
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" <?= $i === $page ? 'class="btn"' : '' ?>><?= $i ?></a>
-        <?php endfor; ?>
-        <a href="?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'hidden' : 'btn btn-outline btn-primary' ?>">Next</a>
-    </div>
+        <div class="flex justify-center mt-5 gap-4">
+    <a href="?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'hidden' : 'btn btn-outline btn-primary' ?>">Previous</a>
+    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+        <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" 
+           class="btn <?= $i === $page ? 'btn-primary' : 'btn-outline' ?>">
+            <?= $i ?>
+        </a>
+    <?php endfor; ?>
+    <a href="?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'hidden' : 'btn btn-outline btn-primary' ?>">Next</a>
+</div>
+
 </main>
 
 <script src="https://cdn.tailwindcss.com"></script>

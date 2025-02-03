@@ -1,3 +1,46 @@
+<?php
+session_start();
+include "../service/connection.php";
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+    $stmt = $conn->prepare("SELECT * FROM admin WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        // Verifikasi password (hash atau plaintext)
+        if ($password === $row['password'] || password_verify($password, $row['password'])) {
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['username'] = $row['username'];
+            $_SESSION['email'] = $row['email'];
+            $_SESSION['phone'] = $row['phone'];
+            
+            echo "<script>alert('Login berhasil!'); window.location.href='home.php';</script>";
+            exit();
+        } else {
+            echo "<script>alert('Password salah!'); window.location.href='index.php';</script>";
+        }
+    } else {
+        echo "<script>alert('Username tidak ditemukan!'); window.location.href='index.php';</script>";
+    }
+    $stmt->close();
+    $conn->close();
+    
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,25 +138,20 @@
 
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Form Sign Up -->
-        <div class="signup-container">
-            <div class="signup-header">Login</div>
-            <form action="../service/auth.php" id="signup-form">
-                <div class="form-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="username" name="username" placeholder="Enter Username" required>
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="confirm-password" name="password" placeholder="Confirm Password" required>
-                    <i class="fas fa-eye-slash toggle-password" onclick="togglePassword('confirm-password', this)"></i>
-                </div>
-                <button name="type" value="login" class="signup-btn" type="submit">Login</button>
-            </form>
-        </div>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-700">
+    <div class="w-96 p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-center text-2xl font-bold mb-6">Login</h2>
+        <form action="" method="POST">
+            <div class="mb-4 relative">
+                <i class="fas fa-user absolute left-3 top-3 text-gray-500"></i>
+                <input type="text" name="username" placeholder="Username" required class="w-full pl-10 p-2 border rounded-lg">
+            </div>
+            <div class="mb-4 relative">
+                <i class="fas fa-key absolute left-3 top-3 text-gray-500"></i>
+                <input type="password" name="password" placeholder="Password" required class="w-full pl-10 p-2 border rounded-lg">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">Login</button>
+        </form>
     </div>
-
 </body>
 </html>
