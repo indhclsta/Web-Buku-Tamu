@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Press Start 2P', cursive;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             overflow: hidden;
         }
@@ -27,7 +27,7 @@
 <body class="flex items-center justify-center min-h-screen">
     <!-- Video Background -->
     <video class="background-video" autoplay loop muted>
-        <source src="./assets/video.mp4" type="video/mp4">
+        <source src="./assets/formulir.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
@@ -41,26 +41,7 @@
                 <label for="nama" class="block text-black">NAMA LENGKAP</label>
                 <input type="text" name="nama" id="nama" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nama lengkap">
             </div>
-            <div>
-                <label for="event" class="block text-black">EVENT</label>
-                <select id="event" name="event" class="w-full p-2 border border-gray-400 rounded">
-                    <?php
-                    include "service/connection.php";
-
-                    $sql = "SELECT id,name FROM events";
-                    $result = $conn->query($sql);
-
-                    if ($result->num_rows > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            echo '<option value="' . $row["id"] . '">' . $row["name"] . '</option>';
-                        }
-                    } else {
-                        echo '<option value="">No events available</option>';
-                    }
-                    $conn->close();
-                    ?>
-                </select>
-            </div>
+           
             <div>
                 <label for="telepon" class="block text-black">NOMOR TELEPON</label>
                 <input type="number" name="telepon" id="telepon" class="w-full p-2 border border-gray-400 rounded" placeholder="Masukkan nomor telepon">

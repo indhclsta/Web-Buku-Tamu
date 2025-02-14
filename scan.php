@@ -60,7 +60,7 @@ if (isset($_SESSION['error'])) {
 <body>
   <!-- background video -->
   <video class="video-background" autoplay muted loop>
-    <source src="./assets/scann.mp4" type="video/mp4">
+    <source src="./assets/scan.mp4" type="video/mp4">
   </video>
 
   <!-- cam scanner. please turn on your webcam to use this -->

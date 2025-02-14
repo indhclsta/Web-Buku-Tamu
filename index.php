@@ -38,9 +38,9 @@
 
 
         .pixel-button {
-            font-family: "Press Start 2P", serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 30px;
-            background-color: #ffcc00;
+            background-color:rgb(183, 215, 217);
             color: #000;
             border: 4px solid #000;
             padding: 10px 20px;
@@ -60,13 +60,13 @@
         }
 
         .pixel-button:hover {
-            background-color: #ffda3c;
+            background-color: #A9E2A9;
         }
     </style>
 </head>
 <body>
     <video class="video-background" autoplay muted loop>
-        <source src="./assets/landing.mp4" type="video/mp4">
+        <source src="./assets/educate.mp4" type="video/mp4">
     </video>
 
     <?php
@@ -82,7 +82,7 @@
 
     <div class="content">    
         <div class="button-container">
-            <a href="scan.php" class="pixel-button">scan</a>
+            <a href="scan.php" class="pixel-button">Scan</a>
             <a href="formulir.php" class="pixel-button">Formulir</a>
         </div>
     </div>

@@ -1,240 +1,198 @@
-<?php session_start(); ?>
-<!DOCTYPE html>
-<html lang="en">
+<?php 
+session_start();
 
+if (isset($_SESSION['username']) == false) {
+    header("location: index.php");
+    exit();
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en" class="font-ubuntu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guest Book Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        .transition-transform {
-            transition: transform 0.3s ease;
-        }
+        .bg-pastel-blue { background-color: #A7C7E7; }
+        .bg-pastel-green { background-color: #A9E2A9; }
+        .bg-pastel-yellow { background-color: #F8E28C; }
+        .text-pastel-orange { color: #FF9E3D; }
+        .text-dark-gray { color: #333333; }
 
-        .hover-scale:hover {
-            transform: scale(1.05);
-        }
+        /* Hover Effects */
+        .btn:hover { background-color: #FF9E3D; transform: scale(1.05); transition: all 0.3s ease; }
+        #searchInput:focus { border-color: #FF9E3D; outline: none; transition: border-color 0.3s ease; }
 
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: linear-gradient(45deg, #4f46e5, #9333ea);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: #F8E28C; }
+        tr:hover { background-color: rgba(167, 199, 231, 0.3); transition: background-color 0.3s ease; }
 
-        .sidebar.open {
-            transform: translateX(0);
-        }
-
-        .glow-button {
-            background: linear-gradient(45deg, #ff00ff, #ff00ff);
-            border: none;
-            border-radius: 50px;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), 0 0 30px rgb(1, 119, 209);
-            transition: all 0.3s ease;
-        }
-
-        .glow-button:hover {
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.7), 0 0 40px rgb(1, 119, 209);
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .pagination a {
-            color: #fff;
-            padding: 12px 20px;
-            margin: 0 5px;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .pagination a:hover {
-            background-color: #f39c12;
-            color: #fff;
-            border-color: #f39c12;
-        }
-
-        .pagination a.active {
-            background-color: #27ae60;
-            color: #fff;
-            border-color: #27ae60;
-        }
-
-        .pagination a.disabled {
-            pointer-events: none;
-            color: #7f8c8d;
-            background-color: #95a5a6;
-            border-color: #95a5a6;
-        }
-    </style>
+        /* Pagination */
+        .pagination a { padding: 8px 12px; margin: 0 4px; border-radius: 5px; }
+        .pagination a.active { background-color: #FF9E3D; color: white; }
+        .pagination a:hover { background-color: #F8E28C; }
     </style>
 </head>
+<body class="bg-pastel-blue text-gray-800 flex flex-col min-h-screen">
 
-<body class="bg-gradient-to-r from-blue-500 to-purple-500 min-h-screen flex flex-col overflow-x-hidden">
-    <!-- Navigation Bar -->
-    <nav class="bg-gradient-to-r from-purple-800 to-indigo-800 w-full fixed top-0 z-10 shadow-lg">
-        <div class="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center relative">
-            <button id="hamburger" class="text-white text-2xl focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1 class="text-2xl font-bold text-white">Guest Book Admin</h1>
-            <!-- Search Form -->
-            <form action="#" method="GET" class="flex items-center space-x-2">
-                <input type="text" name="search" placeholder="Search..." class="px-4 py-2 rounded-lg text-black focus:outline-none" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">Search</button>
-            </form>
+<nav class="bg-pastel-green p-4 shadow-lg">
+    <div class="max-w-screen-xl mx-auto flex justify-between items-center">
+        <span class="text-xl font-semibold text-dark-gray">Event Manager</span>
+        <div class="flex gap-6">
+            <a href="home.php" class="text-gray-700 hover:text-pastel-orange">Event's List</a>
+            <a href="./acc.php" class="text-gray-700 hover:text-pastel-orange">Admin Accounts</a>
+            <a href="#" id="logoutBtn" class="text-gray-700 hover:text-red-600">Logout</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <ul class="mt-16 text-white text-lg">
-            <li class="px-4 py-3 hover:bg-indigo-700 transition-colors"><a href="create_event.php">Event</a></li>
-            <li class="px-4 py-3 hover:bg-indigo-700 transition-colors"><a href="#">Logout</a></li>
-        </ul>
+<main class="container mx-auto p-6 flex-grow">
+    <h1 class="text-3xl font-bold text-center text-dark-gray mb-6">Guest Book Admin</h1>
+    <div class="flex justify-between mb-4">
     </div>
 
-    <!-- Main Content -->
-    <main class="w-full max-w-6xl mt-[6rem] mx-auto px-6">
-        <div class="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg mb-8 transition-transform hover-scale">
-            <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
-                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                Successful Registrations
-            </h2>
-            <table class="w-full text-left text-white">
-                <thead>
-                    <tr class="bg-indigo-800 bg-opacity-75">
-                        <th class="px-4 py-2 cursor-pointer" onclick="sortTable('id')">ID</th>
-                        <th class="px-4 py-2 cursor-pointer" onclick="sortTable('nama')">Name</th>
-                        <th class="px-4 py-2 cursor-pointer" onclick="sortTable('date')">Date</th>
-                        <th class="px-4 py-2 cursor-pointer" onclick="sortTable('time')">Time</th>
-                        <th class="px-4 py-2 cursor-pointer" onclick="sortTable('events')">Event</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    include "../service/connection.php";
+    <?php
+    include "../service/connection.php";
 
-                    // Get event ID from URL
-                    // Update session variables based on GET request
-                    if (!isset($_SESSION['id'])) {
-                        $_SESSION['id'] = intval($_GET['id']);
-                    } else if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
-                        $_SESSION['id'] = intval($_GET['id']);
-                    }
+    // Get event ID from URL
+    if (!isset($_SESSION['id'])) {
+        $_SESSION['id'] = intval($_GET['id']);
+    } else if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
+        $_SESSION['id'] = intval($_GET['id']);
+    }
 
-                    $id = $_SESSION['id'];
+    $id = $_SESSION['id'];
 
-                    // Handle pagination
-                    $records_per_page = 5;
-                    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                    $offset = ($page - 1) * $records_per_page;
+    // Handle pagination
+    $records_per_page = 5;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $offset = ($page - 1) * $records_per_page;
 
-                    // Handle search term
-                    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    // Handle search term
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-                    // Handle sorting
-                    $sort_column = isset($_GET['sort']) ? $_GET['sort'] : 'id'; // Default to 'id'
-                    $sort_order = isset($_GET['order']) && $_GET['order'] == 'asc' ? 'ASC' : 'DESC'; // Default to descending order
+    // Handle sorting
+    $sort_column = isset($_GET['sort']) ? $_GET['sort'] : 'id'; // Default to 'id'
+    $sort_order = isset($_GET['order']) && $_GET['order'] == 'asc' ? 'ASC' : 'DESC'; // Default to descending order
 
-                    // Modify the query to include search and sorting
-                    $sql =  "SELECT r.id, t.nama AS nama, r.date, r.time, e.name AS events
-                    FROM reports r
-                    JOIN tamu t ON r.fid_tamu = t.id
-                    JOIN events e ON r.events_fid = e.id
-                    WHERE r.events_fid = $id
-                    AND (t.nama LIKE '%$search%' OR e.name LIKE '%$search%')
-                    ORDER BY $sort_column $sort_order
-                    LIMIT $offset, $records_per_page
-                    ";
+    // Modify the query to include search and sorting
+    $sql =  "SELECT r.id, t.nama AS nama, r.date, r.time, e.name AS events
+             FROM reports r
+             JOIN tamu t ON r.fid_tamu = t.id
+             JOIN events e ON r.events_fid = e.id
+             WHERE r.events_fid = $id
+             AND (t.nama LIKE '%$search%' OR e.name LIKE '%$search%')
+             ORDER BY $sort_column $sort_order
+             LIMIT $offset, $records_per_page";
 
-                    // echo $sql;
-                    $query = $conn->query($sql);
+    $query = $conn->query($sql);
 
-                    // Count total records
-                    $total_records_query = "SELECT COUNT(*) AS total
-                        FROM reports r
-                        JOIN events e ON r.events_fid = e.id
-                        WHERE e.name LIKE '%$search%';
-                        ";
-                    $total_records_result = $conn->query($total_records_query);
-                    $total_records = $total_records_result->fetch_assoc()['total'];
-                    $total_pages = ceil($total_records / $records_per_page);
-                    // var_dump($query->fetch_assoc());
-                    while ($row = $query->fetch_assoc()) {
-                    ?>
-                        <tr class="hover:bg-purple-700 transition-colors">
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['id']; ?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['nama']; ?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['date']; ?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['time']; ?></td>
-                            <td class="border-t border-purple-500 px-4 py-2"><?php echo $row['events']; ?></td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    </main>
+    // Count total records
+    $total_records_query = "SELECT COUNT(*) AS total
+                            FROM reports r
+                            JOIN events e ON r.events_fid = e.id
+                            WHERE e.name LIKE '%$search%'";
+    $total_records_result = $conn->query($total_records_query);
+    $total_records = $total_records_result->fetch_assoc()['total'];
+    $total_pages = ceil($total_records / $records_per_page);
+    ?>
 
-    <!-- Pagination -->
-    <div class="pagination">
-        <a href="?id=<?=$id?>&?page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">Previous</a>
+    <table>
+        <thead>
+            <tr>
+                <th onclick="sortTable('id')">ID</th>
+                <th onclick="sortTable('nama')">Name</th>
+                <th onclick="sortTable('date')">Date</th>
+                <th onclick="sortTable('time')">Time</th>
+                <th onclick="sortTable('events')">Event</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $query->fetch_assoc()): ?>
+                <tr>
+                    <td><?= $row['id'] ?></td>
+                    <td><?= $row['nama'] ?></td>
+                    <td><?= $row['date'] ?></td>
+                    <td><?= $row['time'] ?></td>
+                    <td><?= $row['events'] ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination flex justify-center mt-6">
+        <?php if ($page > 1): ?>
+            <a href="?id=<?=$id?>&page=<?= $page - 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="btn btn-sm btn-pastel-orange">Previous</a>
+        <?php endif; ?>
+
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" <?= $i === $page ? 'class="active"' : '' ?>><?= $i ?></a>
+            <a href="?id=<?=$id?>&page=<?= $i ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="btn btn-sm <?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
         <?php endfor; ?>
-        <a href="?id=<?=$id?>&?page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="<?= $page >= $total_pages ? 'disabled' : '' ?>">Next</a>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?id=<?=$id?>&page=<?= $page + 1 ?>&search=<?= $search ?>&sort=<?= $sort_column ?>&order=<?= $sort_order ?>" class="btn btn-sm btn-pastel-orange">Next</a>
+        <?php endif; ?>
     </div>
 
     <div class="flex justify-center mt-8 mb-10 space-x-4">
-        <button onclick="location.href = 'pdf.php'" class="glow-button">Generate Report</button>
+        <button onclick="location.href = 'pdf.php'" class="btn btn-pastel-orange">Generate Report</button>
     </div>
+</main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-purple-800 to-indigo-800 w-full py-4 mt-auto">
-        <div class="max-w-6xl mx-auto px-6 text-center text-white">
-            <p>&copy; 2025 Guest Book Admin</p>
-        </div>
-    </footer>
+<footer class="bg-pastel-green text-center p-4">
+    <p class="text-sm text-black">&copy; 2025 Indah Callista Excella. All rights reserved.</p>
+</footer>
 
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const sidebar = document.getElementById('sidebar');
+<script>
+    lucide.createIcons();
 
-        hamburger.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-        });
+    // Sorting function
+    function sortTable(column) {
+        const currentUrl = new URL(window.location.href);
+        const currentSort = currentUrl.searchParams.get('sort');
+        const currentOrder = currentUrl.searchParams.get('order') === 'asc' ? 'desc' : 'asc';
 
-        // Sorting function
-        function sortTable(column) {
-            const currentUrl = new URL(window.location.href);
-            const currentSort = currentUrl.searchParams.get('sort');
-            const currentOrder = currentUrl.searchParams.get('order') === 'asc' ? 'desc' : 'asc';
+        currentUrl.searchParams.set('sort', column);
+        currentUrl.searchParams.set('order', currentOrder);
 
-            currentUrl.searchParams.set('sort', column);
-            currentUrl.searchParams.set('order', currentOrder);
-
-            window.location.href = currentUrl.toString();
+        window.location.href = currentUrl.toString();
+    }
+    
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure you want to logout?',
+        text: "You will be redirected to the login page.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, logout!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Logging out...',
+                text: 'Please wait...',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = "./../logout.php";
+            });
         }
-    </script>
-</body>
+    });
+});
+</script>
 
+</body>
 </html>

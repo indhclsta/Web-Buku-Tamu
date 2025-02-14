@@ -1,5 +1,10 @@
 <?php
 session_start();
+if (isset($_SESSION['username']) == true) {
+    header("location: index.php");
+    exit();
+}
+
 include "../service/connection.php";
 
 if (!$conn) {
@@ -8,7 +13,8 @@ if (!$conn) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $password = hash('sha256', $_POST['password']); // Hash the input password using SHA-256
+
 
     $stmt = $conn->prepare("SELECT * FROM admin WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -42,116 +48,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="font-ubuntu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #3b82f6, #9333ea); /* Gradien biru ke ungu */
-            min-height: 100vh; /* Tinggi minimum layar penuh */
-            display: flex; /* Aktifkan flexbox */
-            flex-direction: column; /* Tata letak vertikal */
-            align-items: center; /* Rata tengah horizontal */
-            justify-content: center; /* Rata tengah vertikal */
-            margin: 0; /* Hilangkan margin default */
-            overflow-x: hidden; /* Sembunyikan overflow horizontal */
-        }
-        .container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            width: 80%;
-            max-width: 1200px;
-        }
-
-        .signup-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            width: 400px;
-            flex-shrink: 0;
-        }
-
-        .signup-header {
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 2.5rem;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            background-color: #f3f8ff;
-            color: #333;
-        }
-
-        .form-group i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-        }
-
-        .form-group .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #666;
-        }
-
-        .signup-btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            background: #596a85;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .signup-btn:hover {
-            background: #48576c;
-        }
-
+        .bg-pastel-blue { background-color: #A7C7E7; }
+        .bg-pastel-green { background-color: #A9E2A9; }
+        .bg-pastel-yellow { background-color: #F8E28C; }
+        .text-dark-gray { color: #333333; }
+        .btn:hover { background-color: #FF9E3D; transform: scale(1.05); transition: all 0.3s ease; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-700">
-    <div class="w-96 p-6 bg-white rounded-lg shadow-md">
-        <h2 class="text-center text-2xl font-bold mb-6">Login</h2>
+<body class="bg-pastel-blue text-gray-800 flex flex-col min-h-screen items-center justify-center">
+    <div class="w-96 bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-center text-2xl font-bold text-dark-gray mb-6">Login</h2>
         <form action="" method="POST">
             <div class="mb-4 relative">
                 <i class="fas fa-user absolute left-3 top-3 text-gray-500"></i>
-                <input type="text" name="username" placeholder="Username" required class="w-full pl-10 p-2 border rounded-lg">
+                <input type="text" name="username" placeholder="Username" required class="w-full pl-10 p-2 border rounded-lg text-dark-gray">
             </div>
             <div class="mb-4 relative">
                 <i class="fas fa-key absolute left-3 top-3 text-gray-500"></i>
-                <input type="password" name="password" placeholder="Password" required class="w-full pl-10 p-2 border rounded-lg">
+                <input type="password" name="password" placeholder="Password" required class="w-full pl-10 p-2 border rounded-lg text-dark-gray">
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">Login</button>
+            <button type="submit" class="w-full bg-pastel-green text-black p-2 rounded-lg hover:bg-pastel-yellow">Login</button>
         </form>
     </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

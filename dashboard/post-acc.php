@@ -1,123 +1,94 @@
 <?php
-    session_start();
-                if(isset($_SESSION['success'])){
-                    echo "<script>Swal.fire('Success', '".$_SESSION['success']."', 'success');</script>";
-                    unset($_SESSION['success']);
-                } else if(isset($_SESSION['error'])){
-                    echo "<script>Swal.fire('Error', '".$_SESSION['error']."', 'error');</script>";
-                    unset($_SESSION['error']);
-                }
-                ?>
-
+session_start();
+if (isset($_SESSION['username']) == false) {
+    header("location: index.php");
+exit();
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="font-ubuntu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Event</title>
+    <title>Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body {
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-        nav {
-            background: linear-gradient(to right, #6b21a8, #4338ca);
-            width: 100%;
-            position: fixed;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        main {
-            width: 50%;
-            max-width: 6xl;
-            margin-top: 6rem;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-        footer {
-            background: linear-gradient(to right, #6b21a8, #4338ca);
-            width: 100%;
-            padding: 1rem 0;
-            margin-top: auto;
-            text-align: center;
-            color: white;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 0.75rem;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-        table th, table td {
-        padding: 0.75rem; /* Perkecil padding */
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-        font-size: 0.875rem; /* Perkecil ukuran font */
-        }
+        .bg-pastel-blue { background-color: #A7C7E7; }
+        .bg-pastel-green { background-color: #A9E2A9; }
+        .bg-pastel-yellow { background-color: #F8E28C; }
+        .text-pastel-orange { color: #FF9E3D; }
+        .text-dark-gray { color: #333333; }
+
+        .btn:hover { background-color: #FF9E3D; transform: scale(1.05); transition: all 0.3s ease; }
+        input:focus { border-color: #FF9E3D; outline: none; transition: border-color 0.3s ease; }
     </style>
 </head>
-<body>
-    <nav>
-        <div class="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center relative">
-            <h1 class="text-2xl font-bold text-white">Formulir Event</h1>
+<body class="bg-pastel-blue text-gray-800 flex flex-col min-h-screen">
+
+<nav class="bg-pastel-green p-4 shadow-lg">
+    <div class="max-w-screen-xl mx-auto flex justify-between items-center">
+        <span class="text-xl font-semibold text-dark-gray">Event Manager</span>
+        <a href="./home.php" class="text-gray-700 hover:text-pastel-orange">Home</a>
+    </div>
+</nav>
+
+<main class="container mx-auto p-6 flex-grow">
+    <h1 class="text-3xl font-bold text-center text-dark-gray mb-6">Create Admin Account</h1>
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <script>
+            Swal.fire({ title: 'Success', text: '<?php echo $_SESSION['success']; ?>', icon: 'success', timer: 1500, showConfirmButton: false });
+        </script>
+        <?php unset($_SESSION['success']); ?>
+    <?php elseif (isset($_SESSION['error'])): ?>
+        <script>
+            Swal.fire({ title: 'Error', text: '<?php echo $_SESSION['error']; ?>', icon: 'error', timer: 1500, showConfirmButton: false });
+        </script>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <form action="../service/auth.php" method="post" class="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
+        <div class="mb-4">
+            <label for="username" class="block text-gray-700 font-bold mb-2">Username:</label>
+            <input type="text" name="username" id="username" class="w-full p-2 border rounded-md text-dark-gray" required>
         </div>
-    </nav>
 
-    <main>
-        <h1 class="text-4xl font-bold text-white text-center mb-8">Tambah Event Baru</h1>
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+            <input type="email" name="email" id="email" class="w-full p-2 border rounded-md text-dark-gray" required>
+        </div>
 
-        <form action="../service/auth.php" method="post" id="eventForm" class="bg-white p-6 rounded-lg shadow-md">
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700 font-bold mb-2">Username:</label>
-                <input type="text" name="username" id="name" class="w-full p-2 border border-gray-300 rounded-lg" required>
-            </div>
-            
-            <div class="mb-4">
-                <label for="event" class="block text-gray-700 font-bold mb-2">Email:</label>
-                <input type="email" name="email" id="event" class="w-full p-2 border border-gray-300 rounded-lg" required>
-            </div>
+        <div class="mb-4">
+            <label for="phone" class="block text-gray-700 font-bold mb-2">No. Tlp:</label>
+            <input type="number" name="phone" id="phone" class="w-full p-2 border rounded-md text-dark-gray" required>
+        </div>
 
-            <div class="mb-4">
-                <label for="date" class="block text-gray-700 font-bold mb-2">No. Tlp:</label>
-                <input type="number" name="phone" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
-            </div>
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-bold mb-2">Password:</label>
+            <input type="password" name="password" id="password" class="w-full p-2 border rounded-md text-dark-gray" required>
+        </div>
 
-            <div class="mb-4">
-                <label for="date" class="block text-gray-700 font-bold mb-2">Password:</label>
-                <input type="password" name="password" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
-            </div>
+        <div class="mb-4">
+            <label for="cpassword" class="block text-gray-700 font-bold mb-2">Confirm Password:</label>
+            <input type="password" name="cpassword" id="cpassword" class="w-full p-2 border rounded-md text-dark-gray" required>
+        </div>
 
-            <div class="mb-4">
-                <label for="date" class="block text-gray-700 font-bold mb-2">confirm Password:</label>
-                <input type="password" name="cpassword" id="date" class="w-full p-2 border border-gray-300 rounded-lg" required>
-            </div>
+        <button type="submit" name="type" value="account" class="bg-pastel-yellow text-dark-gray px-4 py-2 rounded-lg w-full">Create Account</button>
+    </form>
+</main>
 
+<footer class="bg-pastel-green text-center p-4">
+    <p class="text-sm text-black">&copy; 2025 Indah Callista Excella. All rights reserved.</p>
+</footer>
 
-
-            <button type="submit" name="type" value="account" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Buat akun</button>
-        </form>
-
-        
-       
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Formulir Event</p>
-    </footer>
+<script>
+    lucide.createIcons();
+</script>
 
 </body>
-</html>     
+</html>
